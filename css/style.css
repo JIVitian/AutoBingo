@@ -2,10 +2,6 @@ tr {
     height: 41px;
 }
 
-th {
-    width: 100px
-}
-
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
     -webkit-appearance: none; 
@@ -21,4 +17,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 .bingo {
     margin-top: 1rem;
+}
+
+td {
+    text-align: center;
+    font-weight: bold;
 }
