@@ -1,18 +1,17 @@
+import Utils from './utils.js';
+
 // Wait until the document has loaded before run the scripts.
 document.addEventListener("DOMContentLoaded", () => {
   const newBtn = document.getElementById("new-btn");
   const modalBtn = document.getElementById("save-btn");
   const jugada = document.getElementById("jugada");
   const container = document.querySelector(".grid-container");
+  const numBingo = document.getElementById("num-bingo");
+  const modalCells = document.querySelector(".modal-row").children;
+  const utils = new Utils();
 
   
   /******************************** FUNCTIONTS ********************************/
-
-  // Show the modal when press the "Nuevo" button.
-  newBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    $("#modal").modal("toggle");
-  });
   
   // Get the bingos from the local storage
   const getBingos = () => {
@@ -55,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Add 10 rows of empty cells
     for (let i = 0; i < 10; i++) {
-      htmlCode.innerHTML += `<tr>`;
+      htmlCode.innerHTML += `<tr id="n${numBingo}r${i + 1}">`;
       for (let j = 0; j < 10; j++) htmlCode.innerHTML += `<td></td>`;
       htmlCode.innerHTML += `</tr>`;
     }
@@ -64,32 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Add the new bingo in DOM
     container.innerHTML += htmlCode.innerHTML;
-
-    // Another way to do, need to prove
-    // let bingo = document.createElement('div');
-    // let table = document.createElement('table');
-    // let caption = document.createElement('caption');
-    // let thead = document.createElement('thead');
-    // let tbody = document.createElement('tbody');
-    // let numbers = document.createElement('tr');
-
-    // caption.textContent = 'jsjsjsj'
-    // table.appendChild(caption);
-
-    // for(let cell of modalCells){
-    //   let th = document.createElement('th');
-    //   th.textContent = cell.textContent;
-    //   numbers.appendChild(th);
-    // }
-  
-    // thead.appendChild(numbers);
-    // table.appendChild(thead);
-    // container.appendChild(bingo);
-    // bingo.appendChild(table);
-
-    // bingo.className = 'bingo';
   }
 
+  // Render all the bingos stored in Local Storage
   const init = () => {
     const bingos = getBingos();
     bingos.forEach(bingo => renderBingo(bingo.id, bingo.numbers));
@@ -97,24 +73,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
 
+  const renderChecked = (numBingo, round = 1) => {
+    const cell = document.querySelector(`#n${numBingo}r${round}`);
+
+    console.log(cell);
+  }
+
+  renderChecked('Pepi');
+
+  const locateNumber = (value) => {
+    const bingos = getBingos();
+    bingos.forEach(bingo => console.log(utils.binarySearch(bingo.numbers, value)));
+  }
+
+
   /******************************** EVENTS ********************************/
 
+  // Show the modal when press the "Nuevo" button.
+  newBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    numBingo.textContent = "N° de Bingo";
+    for (let cell of modalCells) cell.textContent = "-";
+    $("#modal").modal("toggle");
+  });
+
+  
   modalBtn.addEventListener("click", () => {
-    let numBingo = document.getElementById("num-bingo");
-    numBingo = numBingo.textContent.trim();
-    const modalCells = document.querySelector(".modal-row").children;
+    let id = numBingo.textContent.trim();
     let numbers = [];
 
     for (let cell of modalCells) numbers.push(cell.textContent.trim());
 
-    renderBingo(numBingo, numbers);
+    renderBingo(id, numbers);
     
-    addBingo(numBingo, numbers);
+    addBingo(id, numbers);
     console.log(getBingos());
     
     // Close the modal
     $("#modal").modal("toggle");
   });
+
+  numBingo.addEventListener("click", () => numBingo.textContent = "");
+
+  for (let cell of modalCells) cell.addEventListener("click", () => cell.textContent = "");
 
   // By pressing enter, search in all the lists the entered number.
   jugada.addEventListener("keypress", (e) => {
