@@ -1,4 +1,4 @@
-import Utils from './utils.js';
+import Utils from "./utils.js";
 
 // Wait until the document has loaded before run the scripts.
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,31 +10,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCells = document.querySelector(".modal-row").children;
   const utils = new Utils();
 
-  
   /******************************** FUNCTIONTS ********************************/
-  
+
   // Get the bingos from the local storage
   const getBingos = () => {
     let bingos = JSON.parse(localStorage.getItem("bingos"));
     if (!bingos || bingos.length < 1) {
-      bingos = [{
-        id: 0,
-        numbers: [0,1,2,3,4,5,6,7,8,9]
-      }]
+      bingos = [
+        {
+          id: 0,
+          numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        },
+      ];
     }
     return bingos;
-  }
+  };
 
   // Add new bingo to Local Storage
   const addBingo = (id, numbers) => {
-    const bingo = { id, numbers }
-
     let bingos = getBingos();
 
-    bingos.push(bingo);
+    bingos.push({ id, numbers });
 
     localStorage.setItem("bingos", JSON.stringify(bingos));
-  }
+  };
 
   const renderBingo = (numBingo, numbers) => {
     let htmlCode = new DocumentFragment();
@@ -46,46 +45,52 @@ document.addEventListener("DOMContentLoaded", () => {
     </caption>
     <thead class="table-light">
     <tr class="text-center">`;
-    
+
     // Add the numbers to the table head
-    numbers.forEach(number => htmlCode.innerHTML += `<th scope="col">${number}</th>`)
-    
+    numbers.forEach(
+      (number) => (htmlCode.innerHTML += `<th scope="col">${number}</th>`)
+    );
+
     htmlCode.innerHTML += `</tr></thead><tbody>`;
-    
+
     // Add 10 rows of empty cells
     for (let i = 0; i < 10; i++) {
       htmlCode.innerHTML += `<tr id="n${numBingo}r${i + 1}">`;
       for (let j = 0; j < 10; j++) htmlCode.innerHTML += `<td></td>`;
       htmlCode.innerHTML += `</tr>`;
     }
-    
+
     htmlCode.innerHTML += `</tr></tbody></table></div>`;
-    
+
     // Add the new bingo in DOM
     container.innerHTML += htmlCode.innerHTML;
-  }
+  };
 
   // Render all the bingos stored in Local Storage
   const init = () => {
     const bingos = getBingos();
-    bingos.forEach(bingo => renderBingo(bingo.id, bingo.numbers));
-  }
+    bingos.forEach((bingo) => renderBingo(bingo.id, bingo.numbers));
+  };
 
   init();
 
-  const renderChecked = (numBingo, round = 1) => {
-    const cell = document.querySelector(`#n${numBingo}r${round}`);
-
-    console.log(cell);
-  }
-
-  renderChecked('Pepi');
-
+  // Locate the number in the stored bingos.
   const locateNumber = (value) => {
     const bingos = getBingos();
-    bingos.forEach(bingo => console.log(utils.binarySearch(bingo.numbers, value)));
-  }
+    let occurrencies = [];
+    bingos.forEach((bingo) =>
+      occurrencies.push(utils.binarySearch(bingo.numbers, parseInt(value)))
+    );
+    return occurrencies;
+  };
 
+  // Check the cell that contains the entered value, in the bingo entered, in the entered round.
+  const renderChecked = (numBingo, round = 1, occurrence) => {
+    let row = document.querySelector(`#n${numBingo}r${round}`).children;
+    if (row[occurrence]) row[occurrence].textContent = "X";
+  };
+
+  // renderChecked("Pepi", undefined, 4);
 
   /******************************** EVENTS ********************************/
 
@@ -97,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#modal").modal("toggle");
   });
 
-  
   modalBtn.addEventListener("click", () => {
     let id = numBingo.textContent.trim();
     let numbers = [];
@@ -105,23 +109,28 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let cell of modalCells) numbers.push(cell.textContent.trim());
 
     renderBingo(id, numbers);
-    
+
     addBingo(id, numbers);
     console.log(getBingos());
-    
+
     // Close the modal
     $("#modal").modal("toggle");
   });
 
-  numBingo.addEventListener("click", () => numBingo.textContent = "");
+  numBingo.addEventListener("click", () => (numBingo.textContent = ""));
 
-  for (let cell of modalCells) cell.addEventListener("click", () => cell.textContent = "");
+  for (let cell of modalCells)
+    cell.addEventListener("click", () => (cell.textContent = ""));
 
   // By pressing enter, search in all the lists the entered number.
   jugada.addEventListener("keypress", (e) => {
+    const bingos = getBingos();
+    const occurrencies = locateNumber(jugada.value);
+
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      console.log(e);
+      for (let index in bingos)
+        renderChecked(bingos[index].id, 1, occurrencies[index]);
+
       // Empty the input
       jugada.value = "";
     }
