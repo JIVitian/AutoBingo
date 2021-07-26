@@ -27,3 +27,8 @@ td {
     text-align: center;
     font-weight: bold;
 }
+
+.fa-trash:hover {
+    margin-right: auto;
+    cursor: pointer;
+}

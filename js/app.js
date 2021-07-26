@@ -37,14 +37,24 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("bingos", JSON.stringify(bingos));
   };
 
+  const deleteBingo = (id) => {
+    bingos
+    getBingos().splice(id, );
+  }
+
   // Render a new bingo in the DOM
   const renderBingo = (numBingo, numbers) => {
     let htmlCode = new DocumentFragment();
+    const cardboard = document.createElement("div");
+    cardboard.classList.add('bingo');
 
-    htmlCode.innerHTML = `<div class="bingo">
+    htmlCode.innerHTML = `
     <table class="table table-bordered">
     <caption class="caption-top text-center bg-dark text-white">
-    ${numBingo}
+      <div>
+        ${numBingo}
+        <i class="fas fa-trash text-danger float-end pe-3 pt-1"></i>
+      </div>
     </caption>
     <thead class="table-light">
     <tr class="text-center">`;
@@ -63,10 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
       htmlCode.innerHTML += `</tr>`;
     }
 
-    htmlCode.innerHTML += `</tr></tbody></table></div>`;
+    htmlCode.innerHTML += `</tr></tbody></table>`;
 
-    // Add the new bingo in DOM
-    container.innerHTML += htmlCode.innerHTML;
+    // Add the contain into the cardboard
+    cardboard.innerHTML += htmlCode.innerHTML;
+    // Add the event to delete the cardboard
+    cardboard.querySelector('.fa-trash').addEventListener('click', () => cardboard.remove());
+    // Add the new cardBoard
+    container.appendChild(cardboard);
   };
 
   // Render all the bingos stored in Local Storage
