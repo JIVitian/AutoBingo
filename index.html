@@ -24,7 +24,10 @@
   <nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">AutoBingo</a>
-      <input type="number" name="number" id="jugada" placeholder="Jugada">
+      <div class="play-info">
+        <input type="number" id="jugada" min="1" max="90" placeholder="Jugada" class="modal__input">
+        <input type="number" id="ronda" min="1" max="10" placeholder="Ronda" class="modal__input">
+      </div>
       <button class="btn btn-danger" id="new-btn">Nuevo</button>
     </div>
   </nav>
@@ -81,66 +84,7 @@
   <!-- Main -->
   <main>
     <div class="grid-container">
-      <div class="bingo">
-        <!-- Content Generated JS -->
-        <table class="table table-bordered">
-          <caption class="caption-top text-center bg-dark text-white">
-            Hola ke ase
-          </caption>
-          <thead class="table-light">
-            <tr class="text-center">
-              <th scope="col">1</th>
-              <th scope="col">2</th>
-              <th scope="col">3</th>
-              <th scope="col">4</th>
-              <th scope="col">5</th>
-              <th scope="col">6</th>
-              <th scope="col">7</th>
-              <th scope="col">8</th>
-              <th scope="col">9</th>
-              <th scope="col">10</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="numero jugada">
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td>X</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-              <td></td>
-              <td>X</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- Content Generated with JS -->
     </div>
   </main>
 

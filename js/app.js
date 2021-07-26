@@ -1,3 +1,4 @@
+// import some functions
 import Utils from "./utils.js";
 
 // Wait until the document has loaded before run the scripts.
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".grid-container");
   const numBingo = document.getElementById("num-bingo");
   const modalCells = document.querySelector(".modal-row").children;
+  const round = document.getElementById("ronda");
   const utils = new Utils();
 
   /******************************** FUNCTIONTS ********************************/
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("bingos", JSON.stringify(bingos));
   };
 
+  // Render a new bingo in the DOM
   const renderBingo = (numBingo, numbers) => {
     let htmlCode = new DocumentFragment();
 
@@ -86,11 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check the cell that contains the entered value, in the bingo entered, in the entered round.
   const renderChecked = (numBingo, round = 1, occurrence) => {
-    let row = document.querySelector(`#n${numBingo}r${round}`).children;
+    const row = document.querySelector(`#n${numBingo}r${round}`).children;
     if (row[occurrence]) row[occurrence].textContent = "X";
   };
-
-  // renderChecked("Pepi", undefined, 4);
 
   /******************************** EVENTS ********************************/
 
@@ -102,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#modal").modal("toggle");
   });
 
+  // Save and render the new bingo.
   modalBtn.addEventListener("click", () => {
     let id = numBingo.textContent.trim();
     let numbers = [];
@@ -113,12 +115,14 @@ document.addEventListener("DOMContentLoaded", () => {
     addBingo(id, numbers);
     console.log(getBingos());
 
-    // Close the modal
+    // Close the modal.
     $("#modal").modal("toggle");
   });
 
+  // When the modal's caption is clicked, its content will be emptied.
   numBingo.addEventListener("click", () => (numBingo.textContent = ""));
 
+  // When a modal's cell is clicked, its content will be emptied.
   for (let cell of modalCells)
     cell.addEventListener("click", () => (cell.textContent = ""));
 
@@ -127,9 +131,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const bingos = getBingos();
     const occurrencies = locateNumber(jugada.value);
 
+    // When entering a number pressing Enter, check the corresponding cell in each bingo.
     if (e.key === "Enter" && !e.shiftKey) {
       for (let index in bingos)
-        renderChecked(bingos[index].id, 1, occurrencies[index]);
+        renderChecked(
+          bingos[index].id,
+          round.value ? round.value : 1,
+          occurrencies[index]
+        );
 
       // Empty the input
       jugada.value = "";
