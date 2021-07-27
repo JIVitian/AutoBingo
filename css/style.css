@@ -24,6 +24,8 @@ tr {
 }
 
 td {
+    width: 41px;
+    box-sizing: border-box;
     text-align: center;
     font-weight: bold;
 }

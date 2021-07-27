@@ -1,12 +1,12 @@
 export default class Utils {
   // Quicksort algorithm from https://www.etnassoft.com/2017/03/24/algoritmos-de-ordenacion-en-javascript-revision-es6/
   quickSort([x = [], ...xs]) {
-    return x.length === 0
+    return (x.length === 0)
       ? []
       : [
-          ...quickSort(xs.filter((y) => y <= x)),
+          ...this.quickSort(xs.filter((y) => y <= x)),
           x,
-          ...quickSort(xs.filter((y) => y > x)),
+          ...this.quickSort(xs.filter((y) => y > x)),
         ];
   }
 
