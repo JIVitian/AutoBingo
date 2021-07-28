@@ -38,3 +38,16 @@ td {
 input {
     outline: none;
 }
+
+.modal-cell {
+    width: 100%;
+    height: 100%;
+}
+
+/* .bingo:nth-child(3) {
+    order: -1;
+}
+
+.bingo:nth-child(4) {
+    order: -1;
+} */

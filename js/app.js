@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <table class="table table-bordered">
     <caption class="caption-top text-center bg-dark text-white">
       <div>
-        ${numBingo}
+        N° ${numBingo}
         <i class="fas fa-trash text-danger float-end pe-3 pt-1"></i>
       </div>
     </caption>
@@ -77,6 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const orderControl = () => {
+    let bingos = model.getBingos();
+    for (let bingo in bingos) {
+      let rows = bingos[bingo].checks;
+      let count = rows[iRound.value - 1].reduce(
+        (count, check) => count + check
+      );
+      container.children[bingo].style = `order: -${count};`;
+    }
+  };
+
   // Render all the bingos stored in Local Storage
   const init = () => {
     model.getBingos().forEach((bingo) => {
@@ -89,9 +100,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
+    orderControl();
   };
 
   init();
+
+  const inputControls = (event, element) => {
+    event.preventDefault();
+    // if (element.value === "" || (element.value < element.max.slice(0,0) && event.key === "0")) {
+    if (
+      (element.value === "" && event.key !== "0") ||
+      (parseInt(element.value + event.key) <= element.max &&
+        parseInt(element.value + event.key) >= element.min)
+    ) {
+      element.value += event.key;
+    }
+  };
+
+  const modalCellControls = (event, element) => {
+    event.preventDefault();
+    // if (element.value === "" || (element.value < element.max.slice(0,0) && event.key === "0")) {
+    if (
+      (element.textContent === "" && event.key !== "0") ||
+      (parseInt(element.textContent + event.key) <= 90 &&
+        parseInt(element.textContent + event.key) >= 1)
+    ) {
+      element.textContent += event.key;
+    }
+  };
 
   /******************************** EVENTS ********************************/
 
@@ -131,22 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   iRound.addEventListener("keypress", (e) => {
-    if (parseInt(iRound.value) > 0){
-      e.preventDefault();
-      iRound.value = 10;
-    }
-    if (e.key == '-' || (iRound.value == '' && e.key == 0)){
-      iRound.value = 1;
-      e.preventDefault();
-    }
+    inputControls(e, iRound);
   });
 
   // When a modal's cell is clicked, its content will be emptied.
   for (let cell of modalCells) {
     cell.addEventListener("click", () => (cell.textContent = ""));
-    cell.addEventListener("keypress", () => {
-      if (cell.textContent.length > 1)
-        cell.textContent = cell.textContent.slice(0, 1);
+    cell.addEventListener("keypress", (e) => {
+      modalCellControls(e, cell);
+      if (e.key === "Enter");
     });
   }
 
@@ -155,17 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bingos = model.getBingos();
     const occurrencies = locateNumber(jugada.value);
 
-    // It does not allow to enter a number of more than 2 digits
-    if (parseInt(jugada.value) > 9){
-      jugada.value = 90;
-      e.preventDefault();
-    }
-    if (e.key == '-' || (jugada.value == '' && e.key == 0)){
-      jugada.value = 1;
-      e.preventDefault();
-    }
-
-    // When entering a number pressing Enter, check the corresponding cell in each bingo.
+    // When entering a number pressing Enter, the corresponding cell in each bingo will be checked.
     if (e.key === "Enter" && !e.shiftKey) {
       for (let index in bingos) {
         renderChecked(
@@ -175,13 +194,16 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         model.checkCell(
           bingos[index].id,
-          iRound.value ? iRound.value : 0,
+          iRound.value ? iRound.value - 1 : 0,
           occurrencies[index]
         );
+        orderControl();
       }
 
       // Empty the input
       jugada.value = "";
+    } else {
+      inputControls(e, jugada);
     }
   });
 
