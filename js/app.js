@@ -1,4 +1,4 @@
-import Bingo from './bingo.js'
+import Bingo from "./bingo.js";
 // import some functions
 import Utils from "./utils.js";
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderBingo = (numBingo, numbers) => {
     let htmlCode = new DocumentFragment();
     const cardboard = document.createElement("div");
-    cardboard.classList.add('bingo');
+    cardboard.classList.add("bingo");
 
     htmlCode.innerHTML = `
     <table class="table table-bordered">
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add the contain into the cardboard
     cardboard.innerHTML += htmlCode.innerHTML;
     // Add the event to delete the cardboard
-    cardboard.querySelector('.fa-trash').addEventListener('click', () => {
+    cardboard.querySelector(".fa-trash").addEventListener("click", () => {
       cardboard.remove();
       model.removeBingo(numBingo);
     });
@@ -60,23 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(cardboard);
   };
 
-  // Render all the bingos stored in Local Storage
-  const init = () => {
-    model.getBingos().forEach((bingo) => renderBingo(bingo.id, bingo.numbers));
-  };
-
-  init();
-
   // Locate the number in the stored bingos.
   const locateNumber = (value) => {
-    return model.getBingos().map(bingo => utils.binarySearch(bingo.numbers, parseInt(value)));
+    return model
+      .getBingos()
+      .map((bingo) => utils.binarySearch(bingo.numbers, parseInt(value)));
   };
 
   // Check the cell that contains the entered value, in the bingo entered, in the entered round.
-  const renderChecked = (numBingo, round = 1, occurrence) => {
+  const renderChecked = (numBingo, round = 1, position) => {
     const row = document.querySelector(`#n${numBingo}r${round}`).children;
-    if (row[occurrence]) row[occurrence].textContent = "X";
+    // const occurrencies = locateNumber(jugada.value);
+    if (row[position]) {
+      row[position].textContent = "X";
+    }
   };
+
+  // Render all the bingos stored in Local Storage
+  const init = () => {
+    model.getBingos().forEach((bingo) => {
+      renderBingo(bingo.id, bingo.numbers);
+      for (let round in bingo.checks) {
+        for (let position in bingo.checks[round]) {
+          if (bingo.checks[round][position] !== 0)
+            renderChecked(bingo.id, parseInt(round) + 1, position);
+        }
+      }
+    });
+  };
+
+  init();
 
   /******************************** EVENTS ********************************/
 
@@ -104,10 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // When the modal's caption is clicked, its content will be emptied.
   numBingo.addEventListener("click", () => (numBingo.textContent = ""));
 
+  // The 'Aleatorio' button create a random bingo
   document.getElementById("random-btn").addEventListener("click", () => {
-    const randomId = Math.round(Math.random() * 10000);
+    const randomId = Math.round(Math.random() * 9999 + 1);
     let randomNumbers = [];
-    for (let i = 0; i < 10; i++) randomNumbers.push(Math.round(Math.random() * 89 + 1));
+    for (let i = 0; i < 10; i++)
+      randomNumbers.push(Math.round(Math.random() * 89 + 1));
     randomNumbers = utils.quickSort(randomNumbers);
     model.addBingo(randomId, randomNumbers);
     renderBingo(randomId, randomNumbers);
@@ -124,14 +139,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // When entering a number pressing Enter, check the corresponding cell in each bingo.
     if (e.key === "Enter" && !e.shiftKey) {
-      for (let index in bingos)
+      for (let index in bingos) {
         renderChecked(
           bingos[index].id,
           round.value ? round.value : 1,
           occurrencies[index]
         );
+        model.checkCell(
+          bingos[index].id,
+          round.value ? round.value : 0,
+          occurrencies[index]
+        );
+      }
 
-      // Empty the input
+      // Empty the cell
       jugada.value = "";
     }
   });

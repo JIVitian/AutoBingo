@@ -9,13 +9,24 @@ export default class Bingo {
         {
           id: 0,
           numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          // Matrix represents each bingo's cell
+          checks: [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          ],
+
+          // [[1, 0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0], [10,0]]
         },
       ];
-    //   this.currentId = 1;
-    } 
-    // else {
-    //   this.currentId = this.bingos[this.bingos.length - 1].id + 1;
-    // }
+    }
   }
 
   // Save changes in local Storage
@@ -23,14 +34,26 @@ export default class Bingo {
     localStorage.setItem("bingos", JSON.stringify(this.bingos));
   }
 
+  // Retunrs a copy bingo's list
   getBingos() {
     return this.bingos.map((bingo) => ({ ...bingo }));
   }
 
+  // Add a new bingo in the list and return it
   addBingo(id, numbers) {
+    const checks = [];
+
+    for (let i = 0; i < 10; i++) {
+      checks.push([]);
+      for (let j = 0; j < 10; j++){
+        checks[i].push(0);
+      }
+    }
+
     const bingo = {
       id,
-      numbers
+      numbers,
+      checks
     };
 
     this.bingos.push(bingo);
@@ -41,6 +64,12 @@ export default class Bingo {
 
   findBingo(id) {
     return this.bingos.findIndex((bingo) => bingo.id === id);
+  }
+
+  checkCell(id, round, position) {
+    const index = this.findBingo(id);
+    this.bingos[index].checks[round][position] = 1;
+    this.save();
   }
 
   removeBingo(id) {

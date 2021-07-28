@@ -34,3 +34,7 @@ td {
     margin-right: auto;
     cursor: pointer;
 }
+
+input {
+    outline: none;
+}
