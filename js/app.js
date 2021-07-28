@@ -1,3 +1,4 @@
+// import the bingo's model
 import Bingo from "./bingo.js";
 // import some functions
 import Utils from "./utils.js";
@@ -10,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".grid-container");
   const numBingo = document.getElementById("num-bingo");
   const modalCells = document.querySelector(".modal-row").children;
-  const round = document.getElementById("ronda");
+  const iRound = document.getElementById("ronda");
   const model = new Bingo();
   const utils = new Utils();
 
@@ -80,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const init = () => {
     model.getBingos().forEach((bingo) => {
       renderBingo(bingo.id, bingo.numbers);
+      // Render all the checked cells
       for (let round in bingo.checks) {
         for (let position in bingo.checks[round]) {
           if (bingo.checks[round][position] !== 0)
@@ -128,32 +130,60 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBingo(randomId, randomNumbers);
   });
 
+  iRound.addEventListener("keypress", (e) => {
+    if (parseInt(iRound.value) > 0){
+      e.preventDefault();
+      iRound.value = 10;
+    }
+    if (e.key == '-' || (iRound.value == '' && e.key == 0)){
+      iRound.value = 1;
+      e.preventDefault();
+    }
+  });
+
   // When a modal's cell is clicked, its content will be emptied.
-  for (let cell of modalCells)
+  for (let cell of modalCells) {
     cell.addEventListener("click", () => (cell.textContent = ""));
+    cell.addEventListener("keypress", () => {
+      if (cell.textContent.length > 1)
+        cell.textContent = cell.textContent.slice(0, 1);
+    });
+  }
 
   // By pressing enter, search in all the lists the entered number.
   jugada.addEventListener("keypress", (e) => {
     const bingos = model.getBingos();
     const occurrencies = locateNumber(jugada.value);
 
+    // It does not allow to enter a number of more than 2 digits
+    if (parseInt(jugada.value) > 9){
+      jugada.value = 90;
+      e.preventDefault();
+    }
+    if (e.key == '-' || (jugada.value == '' && e.key == 0)){
+      jugada.value = 1;
+      e.preventDefault();
+    }
+
     // When entering a number pressing Enter, check the corresponding cell in each bingo.
     if (e.key === "Enter" && !e.shiftKey) {
       for (let index in bingos) {
         renderChecked(
           bingos[index].id,
-          round.value ? round.value : 1,
+          iRound.value ? iRound.value : 1,
           occurrencies[index]
         );
         model.checkCell(
           bingos[index].id,
-          round.value ? round.value : 0,
+          iRound.value ? iRound.value : 0,
           occurrencies[index]
         );
       }
 
-      // Empty the cell
+      // Empty the input
       jugada.value = "";
     }
   });
+
+  // jugada.addEventListener();
 });
