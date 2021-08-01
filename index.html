@@ -23,15 +23,15 @@
 <body>
   <!-- Navbar -->
 
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
+  <nav class="navbar navbar-expand navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">AutoBingo</a>
-      <div class="play-info input-container">
-        <input type="number" id="jugada" min="1" max="90" placeholder="Jugada">
+      <div class="d-flex flex-column d-sm-block w-25 text-center">
+        <input type="number" id="jugada" min="1" max="90" placeholder="Jugada" class="mb-2 mb-sm-0">
         <input type="number" id="ronda" min="1" max="10" placeholder="Ronda" value="1">
       </div>
       <div class="button-container d-lg-flex justify-content-lg-around">
-        <button class="btn btn-danger ms-sm-1" id="new-btn">Nuevo</button>
+        <button class="btn btn-danger mb-1 mb-sm-0" id="new-btn">Nuevo</button>
         <button class="btn btn-danger ms-lg-2" id="random-btn">Aleatorio</button>
       </div>
     </div>
@@ -89,7 +89,7 @@
   <!-- Main -->
 
   <main>
-    <div class="grid-container ms-lg-3 me-lg-3">
+    <div class="grid-container ms-lg-3 me-lg-3 ms-md-3 me-md-3">
       <!-- Content Generated with JS -->
     </div>
   </main>
