@@ -129,6 +129,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const newBingoControls = () => {
+    const regex = /\d{1,4}/;
+
+    if(!regex.test(numBingo.textContent)) return false;
+    
+    for (let cell of modalCells) if(!regex.test(cell.textContent)) return false;
+    
+    return true;
+  };
+
   /******************************** EVENTS ********************************/
 
   // Show the modal when press the "Nuevo" button.
@@ -144,12 +154,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let id = numBingo.textContent.trim();
     let numbers = [];
 
-    for (let cell of modalCells) numbers.push(cell.textContent.trim());
-    renderBingo(id, numbers);
-    model.addBingo(id, numbers);
+    const controls = newBingoControls();
 
-    // Close the modal.
-    $("#modal").modal("toggle");
+    if (controls) {  
+      for (let cell of modalCells) numbers.push(cell.textContent.trim());
+      renderBingo(id, numbers);
+      model.addBingo(id, numbers);
+  
+      // Close the modal.
+      $("#modal").modal("toggle");
+    } else {
+      alert("Solo se pueden ingresar numeros");
+    }
   });
 
   // When the modal's caption is clicked, its content will be emptied.
