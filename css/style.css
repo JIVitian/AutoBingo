@@ -8,18 +8,45 @@ input[type=number]::-webkit-outer-spin-button {
     text-align: center;
 }
 
+.nav__imput-container {
+    width: max-content;
+}
+
+.nav__input {
+    width: 122px;
+}
+
+.round-container {
+    background-color: white;
+    width: fit-content;
+    flex: 1;
+}
+
+#ronda {
+    background: none;
+    border: none;
+}
+
+.ronda-btn {
+    border-radius: 50%;
+    width: 1.9rem;
+    height: 1.9rem;
+
+}
+
 .button-container{
     width: min-content;
 }
 
 .grid-container {
+    margin: 1rem 0.2rem;
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 25rem), 1fr));
 }
 
 .bingo {
-    margin-top: 1rem;
+    font-size: 0.95rem;
 }
 
 tr {

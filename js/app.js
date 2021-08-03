@@ -166,6 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBingo(randomId, randomNumbers);
   });
 
+  document.getElementById('decrease').addEventListener("click", () => {if(iRound.value > 1)  iRound.value--});
+
+  document.getElementById('increase').addEventListener("click", () => {if(iRound.value < 10)  iRound.value++});
+
   iRound.addEventListener("keypress", (e) => {
     inputControls(e, iRound);
   });

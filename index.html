@@ -26,9 +26,13 @@
   <nav class="navbar navbar-expand navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">AutoBingo</a>
-      <div class="d-flex flex-column d-sm-block w-25 text-center">
-        <input type="number" id="jugada" min="1" max="90" placeholder="Jugada" class="mb-2 mb-sm-0">
-        <input type="number" id="ronda" min="1" max="10" placeholder="Ronda" value="1">
+      <div class="d-flex flex-column d-sm-flex flex-sm-row text-center nav__input-container">
+        <input type="number" id="jugada" min="1" max="90" placeholder="Jugada" class="mb-2 mb-sm-0 nav__input">
+        <div class="round-container nav__input ms-0 ms-sm-2">
+          <button id="decrease" class="ronda-btn">-</button>
+          <input type="number" id="ronda" min="1" max="10" placeholder="Ronda" class="w-25" value="1">
+          <button id="increase" class="ronda-btn">+</button>
+        </div>
       </div>
       <div class="button-container d-lg-flex justify-content-lg-around">
         <button class="btn btn-danger mb-1 mb-sm-0" id="new-btn">Nuevo</button>
@@ -89,7 +93,7 @@
   <!-- Main -->
 
   <main>
-    <div class="grid-container ms-lg-3 me-lg-3 ms-md-3 me-md-3">
+    <div class="grid-container ms-sm-3 me-sm-3">
       <!-- Content Generated with JS -->
     </div>
   </main>
