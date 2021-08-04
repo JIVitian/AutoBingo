@@ -125,11 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const modalCellControls = (event, element) => {
     event.preventDefault();
-    // if (element.value === "" || (element.value < element.max.slice(0,0) && event.key === "0")) {
+
     if (
-      (element.textContent === "" && event.key !== "0") ||
-      (parseInt(element.textContent + event.key) <= 90 &&
-        parseInt(element.textContent + event.key) >= 1)
+      /\d/.test(event.key) &&
+      parseInt(element.textContent + event.key) <= 90 &&
+      parseInt(element.textContent + event.key) >= 1
     ) {
       element.textContent += event.key;
     }
@@ -141,13 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!regex.test(numBingo.textContent))
       return { condition: false, message: "Solo puede ingresar números!" };
-    if (model.getBingos().filter(bingo => bingo.id == numBingo.textContent).length > 0)
-      return { condition : false , message: "El numero de ese bingo ya existe!"}
+    if (model.getBingos().find((bingo) => bingo.id == numBingo.textContent))
+      return { condition: false, message: "El numero de ese bingo ya existe!" };
+
     for (let cell of modalCells) {
       if (!regex.test(cell.textContent))
         return { condition: false, message: "Solo puede ingresar números!" };
       // Check that there are no repeated numbers
-      if (numbers.filter((number) => number == cell.textContent).length > 0)
+      if (numbers.find((number) => number == cell.textContent))
         return {
           condition: false,
           message: "No pueden haber numeros repetidos repetidos!",
@@ -155,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       numbers.push(cell.textContent);
     }
 
-    return { condition : true };
+    return { condition: true };
   };
 
   /******************************** EVENTS ********************************/
@@ -197,8 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("random-btn").addEventListener("click", () => {
     const randomId = Math.round(Math.random() * 9999 + 1);
     let randomNumbers = [];
-    for (let i = 0; i < 10; i++)
-      randomNumbers.push(Math.round(Math.random() * 89 + 1));
+    for (let i = 0; i < 10; i++) {
+      let rand = Math.round(Math.random() * 89 + 1);
+      if (!randomNumbers.find((number) => number == rand))
+        randomNumbers.push(rand);
+      else i--;
+    }
     randomNumbers = utils.quickSort(randomNumbers);
     model.addBingo(randomId, randomNumbers);
     renderBingo(randomId, randomNumbers);
@@ -221,7 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
     cell.addEventListener("click", () => (cell.textContent = ""));
     cell.addEventListener("keypress", (e) => {
       modalCellControls(e, cell);
-      if (e.key === "Enter");
+      // if (e.code == "Enter") {
+      //   cell.textContent = cell.textContent;
+      //   cell.textContent = cell.nextElementSibling.focus();
+      // }
     });
   }
 
