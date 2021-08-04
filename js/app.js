@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const numBingo = document.getElementById("num-bingo");
   const modalCells = document.querySelector(".modal-row").children;
   const iRound = document.getElementById("ronda");
+  const alert = document.getElementById("modal-alert");
   const model = new Bingo();
   const utils = new Utils();
 
@@ -161,10 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
       renderBingo(id, numbers);
       model.addBingo(id, numbers);
   
+      alert.classList.add("d-none");
       // Close the modal.
       $("#modal").modal("toggle");
     } else {
-      alert("Solo se pueden ingresar numeros");
+      alert.classList.remove("d-none");
+      alert.innerText = "Debe rellenar todos los campos y solo puede ingresar números!";
     }
   });
 
