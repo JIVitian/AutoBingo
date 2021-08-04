@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCells = document.querySelector(".modal-row").children;
   const iRound = document.getElementById("ronda");
   const alert = document.getElementById("modal-alert");
+  const deleteModal = document.getElementById("modal-delete");
   const model = new Bingo();
   const utils = new Utils();
 
@@ -55,8 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     cardboard.innerHTML += htmlCode.innerHTML;
     // Add the event to delete the cardboard
     cardboard.querySelector(".fa-trash").addEventListener("click", () => {
-      cardboard.remove();
-      model.removeBingo(numBingo);
+      // window.alert("Are you sure you want to delete?");
+      $("#deleteModal").modal("toggle");
+      document.getElementById("deleteButton").onclick = () => {
+        cardboard.remove();
+        model.removeBingo(numBingo);
+        $("#deleteModal").modal("toggle");
+      };
     });
     // Add the new cardBoard
     container.appendChild(cardboard);
