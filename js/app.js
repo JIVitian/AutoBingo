@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCells = document.querySelector(".modal-row").children;
   const iRound = document.getElementById("ronda");
   const alert = document.getElementById("modal-alert");
-  const deleteModal = document.getElementById("modal-delete");
   const model = new Bingo();
   const utils = new Utils();
 
@@ -138,12 +137,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const newBingoControls = () => {
     const regex = /\d{1,4}/;
+    const numbers = [];
 
-    if(!regex.test(numBingo.textContent)) return false;
-    
-    for (let cell of modalCells) if(!regex.test(cell.textContent)) return false;
-    
-    return true;
+    if (!regex.test(numBingo.textContent))
+      return { condition: false, message: "Solo puede ingresar números!" };
+    if (model.getBingos().filter(bingo => bingo.id == numBingo.textContent).length > 0)
+      return { condition : false , message: "El numero de ese bingo ya existe!"}
+    for (let cell of modalCells) {
+      if (!regex.test(cell.textContent))
+        return { condition: false, message: "Solo puede ingresar números!" };
+      // Check that there are no repeated numbers
+      if (numbers.filter((number) => number == cell.textContent).length > 0)
+        return {
+          condition: false,
+          message: "No pueden haber numeros repetidos repetidos!",
+        };
+      numbers.push(cell.textContent);
+    }
+
+    return { condition : true };
   };
 
   /******************************** EVENTS ********************************/
@@ -163,17 +175,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const controls = newBingoControls();
 
-    if (controls) {  
-      for (let cell of modalCells) numbers.push(cell.textContent.trim());
+    if (controls.condition) {
+      for (let cell of modalCells) numbers.push(parseInt(cell.textContent));
+      numbers = utils.quickSort(numbers);
       renderBingo(id, numbers);
       model.addBingo(id, numbers);
-  
+
       alert.classList.add("d-none");
       // Close the modal.
       $("#modal").modal("toggle");
     } else {
       alert.classList.remove("d-none");
-      alert.innerText = "Debe rellenar todos los campos y solo puede ingresar números!";
+      alert.innerText = controls.message;
     }
   });
 
@@ -191,9 +204,13 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBingo(randomId, randomNumbers);
   });
 
-  document.getElementById('decrease').addEventListener("click", () => {if(iRound.value > 1)  iRound.value--});
+  document.getElementById("decrease").addEventListener("click", () => {
+    if (iRound.value > 1) iRound.value--;
+  });
 
-  document.getElementById('increase').addEventListener("click", () => {if(iRound.value < 10)  iRound.value++});
+  document.getElementById("increase").addEventListener("click", () => {
+    if (iRound.value < 10) iRound.value++;
+  });
 
   iRound.addEventListener("keypress", (e) => {
     inputControls(e, iRound);
