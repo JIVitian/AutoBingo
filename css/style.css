@@ -4,10 +4,7 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;  
 }
 
-.modal__input {
-    text-align: center;
-}
-
+/******************************** NAV ********************************/
 .nav__imput-container {
     width: max-content;
 }
@@ -31,13 +28,37 @@ input[type=number]::-webkit-outer-spin-button {
     border-radius: 50%;
     width: 1.9rem;
     height: 1.9rem;
-
 }
 
 .button-container{
     width: min-content;
 }
 
+input {
+    outline: none;
+    text-align: center;;
+}
+
+/******************************** MODALS ********************************/
+.modal__input {
+    text-align: center;
+}
+
+.modal-cell {
+    width: 100%;
+    height: 100%;
+}
+
+.modal-row th {
+    font-size: 0.75rem;
+}
+
+.btn {
+    width: 90px;
+    box-sizing: border-box;
+}
+
+/******************************** MAIN ********************************/
 .grid-container {
     margin: 1rem 0.2rem;
     display: grid;
@@ -63,23 +84,4 @@ td {
 .fa-trash:hover {
     margin-right: auto;
     cursor: pointer;
-}
-
-input {
-    outline: none;
-    text-align: center;;
-}
-
-.btn {
-    width: 90px;
-    box-sizing: border-box;
-}
-
-.modal-cell {
-    width: 100%;
-    height: 100%;
-}
-
-.modal-row th {
-    font-size: 0.75rem;
 }

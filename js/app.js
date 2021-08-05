@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Only allows to enter unique numbers between 1 and 90
   const modalCellControls = (event, element) => {
     event.preventDefault();
 
@@ -135,8 +136,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Control that all the new bingo's data is correct
   const newBingoControls = () => {
-    const regex = /\d{1,4}/;
+    const regex = /\d*/;
     const numbers = [];
 
     if (!regex.test(numBingo.textContent))
@@ -151,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (numbers.find((number) => number == cell.textContent))
         return {
           condition: false,
-          message: "No pueden haber numeros repetidos repetidos!",
+          message: "No puede haber numeros repetidos!",
         };
       numbers.push(cell.textContent);
     }
@@ -193,6 +195,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // When the modal's caption is clicked, its content will be emptied.
   numBingo.addEventListener("click", () => (numBingo.textContent = ""));
+  // Only allows to enter numbers
+  numBingo.addEventListener("keypress", (e) => {
+    if (!/\d/.test(e.code) || numBingo.textContent.length > 5)
+      e.preventDefault();
+  });
 
   // The 'Aleatorio' button create a random bingo
   document.getElementById("random-btn").addEventListener("click", () => {
@@ -209,27 +216,29 @@ document.addEventListener("DOMContentLoaded", () => {
     renderBingo(randomId, randomNumbers);
   });
 
+  // Button increase and decrease functions
   document.getElementById("decrease").addEventListener("click", () => {
     if (iRound.value > 1) iRound.value--;
   });
-
   document.getElementById("increase").addEventListener("click", () => {
     if (iRound.value < 10) iRound.value++;
   });
 
+  // Allows to write round's number
   iRound.addEventListener("keypress", (e) => {
     inputControls(e, iRound);
   });
 
   // When a modal's cell is clicked, its content will be emptied.
   for (let cell of modalCells) {
-    cell.addEventListener("click", () => (cell.textContent = ""));
+    cell.addEventListener("focus", () => (cell.textContent = ""));
     cell.addEventListener("keypress", (e) => {
       modalCellControls(e, cell);
-      // if (e.code == "Enter") {
-      //   cell.textContent = cell.textContent;
-      //   cell.textContent = cell.nextElementSibling.focus();
-      // }
+      if (e.code == "Enter") {
+        cell.nextElementSibling
+          ? cell.nextElementSibling.focus()
+          : modalBtn.focus();
+      }
     });
   }
 
@@ -260,6 +269,4 @@ document.addEventListener("DOMContentLoaded", () => {
       inputControls(e, jugada);
     }
   });
-
-  // jugada.addEventListener();
 });
