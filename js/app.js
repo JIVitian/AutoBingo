@@ -38,7 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add the numbers to the table head
     numbers.forEach(
-      (number) => (htmlCode.innerHTML += `<th scope="col">${number}</th>`)
+      (number) =>
+        (htmlCode.innerHTML += `<th scope="col">${number
+          .toString()
+          .padStart(2, '0')}</th>`)
     );
 
     htmlCode.innerHTML += `</tr></thead><tbody>`;
