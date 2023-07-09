@@ -253,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // When entering a number pressing Enter, the corresponding cell in each bingo will be checked.
     if (e.key === 'Enter' && !e.shiftKey) {
-      debugger;
       for (let index in bingos) {
         renderChecked(
           bingos[index].id,
