@@ -1,18 +1,19 @@
 // import the bingo's model
-import Bingo from "./bingo.js";
+import Bingo from './bingo.js';
 // import some functions
-import Utils from "./utils.js";
+import Utils from './utils.js';
+import { usuarioQuiereCargarDemo, getDemoBingos } from './demo.js';
 
 // Wait until the document has loaded before run the scripts.
-document.addEventListener("DOMContentLoaded", () => {
-  const newBtn = document.getElementById("new-btn");
-  const modalBtn = document.getElementById("save-btn");
-  const jugada = document.getElementById("jugada");
-  const container = document.querySelector(".grid-container");
-  const numBingo = document.getElementById("num-bingo");
-  const modalCells = document.querySelector(".modal-row").children;
-  const iRound = document.getElementById("ronda");
-  const alert = document.getElementById("modal-alert");
+document.addEventListener('DOMContentLoaded', () => {
+  const newBtn = document.getElementById('new-btn');
+  const modalBtn = document.getElementById('save-btn');
+  const jugada = document.getElementById('jugada');
+  const container = document.querySelector('.grid-container');
+  const numBingo = document.getElementById('num-bingo');
+  const modalCells = document.querySelector('.modal-row').children;
+  const iRound = document.getElementById('ronda');
+  const alert = document.getElementById('modal-alert');
   const model = new Bingo();
   const utils = new Utils();
 
@@ -21,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Render a new bingo in the DOM
   const renderBingo = (numBingo, numbers) => {
     let htmlCode = new DocumentFragment();
-    const cardboard = document.createElement("div");
-    cardboard.classList.add("bingo");
+    const cardboard = document.createElement('div');
+    cardboard.classList.add('bingo');
 
     htmlCode.innerHTML = `
     <table class="table table-bordered">
@@ -54,13 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add the contain into the cardboard
     cardboard.innerHTML += htmlCode.innerHTML;
     // Add the event to delete the cardboard
-    cardboard.querySelector(".fa-trash").addEventListener("click", () => {
+    cardboard.querySelector('.fa-trash').addEventListener('click', () => {
       // window.alert("Are you sure you want to delete?");
-      $("#deleteModal").modal("toggle");
-      document.getElementById("deleteButton").onclick = () => {
+      $('#deleteModal').modal('toggle');
+      document.getElementById('deleteButton').onclick = () => {
         cardboard.remove();
         model.removeBingo(numBingo);
-        $("#deleteModal").modal("toggle");
+        $('#deleteModal').modal('toggle');
       };
     });
     // Add the new cardBoard
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const row = document.querySelector(`#n${numBingo}r${round}`).children;
     // const occurrencies = locateNumber(jugada.value);
     if (row[position]) {
-      row[position].textContent = "X";
+      row[position].textContent = 'X';
     }
   };
 
@@ -96,6 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Render all the bingos stored in Local Storage
   const init = () => {
+    if (usuarioQuiereCargarDemo()) model.setBingos(getDemoBingos());
+
     model.getBingos().forEach((bingo) => {
       renderBingo(bingo.id, bingo.numbers);
       // Render all the checked cells
@@ -106,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
+
     orderControl();
   };
 
@@ -115,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     // if (element.value === "" || (element.value < element.max.slice(0,0) && event.key === "0")) {
     if (
-      (element.value === "" && event.key !== "0") ||
+      (element.value === '' && event.key !== '0') ||
       (parseInt(element.value + event.key) <= element.max &&
         parseInt(element.value + event.key) >= element.min)
     ) {
@@ -142,18 +146,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const numbers = [];
 
     if (!regex.test(numBingo.textContent))
-      return { condition: false, message: "Solo puede ingresar números!" };
+      return { condition: false, message: 'Solo puede ingresar números!' };
     if (model.getBingos().find((bingo) => bingo.id == numBingo.textContent))
-      return { condition: false, message: "El numero de ese bingo ya existe!" };
+      return { condition: false, message: 'El numero de ese bingo ya existe!' };
 
     for (let cell of modalCells) {
       if (!regex.test(cell.textContent))
-        return { condition: false, message: "Solo puede ingresar números!" };
+        return { condition: false, message: 'Solo puede ingresar números!' };
       // Check that there are no repeated numbers
       if (numbers.find((number) => number == cell.textContent))
         return {
           condition: false,
-          message: "No puede haber numeros repetidos!",
+          message: 'No puede haber numeros repetidos!',
         };
       numbers.push(cell.textContent);
     }
@@ -164,15 +168,15 @@ document.addEventListener("DOMContentLoaded", () => {
   /******************************** EVENTS ********************************/
 
   // Show the modal when press the "Nuevo" button.
-  newBtn.addEventListener("click", (e) => {
+  newBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    numBingo.textContent = "N° de Bingo";
-    for (let cell of modalCells) cell.textContent = "-";
-    $("#modal").modal("toggle");
+    numBingo.textContent = 'N° de Bingo';
+    for (let cell of modalCells) cell.textContent = '-';
+    $('#modal').modal('toggle');
   });
 
   // Save and render the new bingo.
-  modalBtn.addEventListener("click", () => {
+  modalBtn.addEventListener('click', () => {
     let id = numBingo.textContent.trim();
     let numbers = [];
 
@@ -184,25 +188,25 @@ document.addEventListener("DOMContentLoaded", () => {
       renderBingo(id, numbers);
       model.addBingo(id, numbers);
 
-      alert.classList.add("d-none");
+      alert.classList.add('d-none');
       // Close the modal.
-      $("#modal").modal("toggle");
+      $('#modal').modal('toggle');
     } else {
-      alert.classList.remove("d-none");
+      alert.classList.remove('d-none');
       alert.innerText = controls.message;
     }
   });
 
   // When the modal's caption is clicked, its content will be emptied.
-  numBingo.addEventListener("click", () => (numBingo.textContent = ""));
+  numBingo.addEventListener('click', () => (numBingo.textContent = ''));
   // Only allows to enter numbers
-  numBingo.addEventListener("keypress", (e) => {
+  numBingo.addEventListener('keypress', (e) => {
     if (!/\d/.test(e.code) || numBingo.textContent.length > 5)
       e.preventDefault();
   });
 
   // The 'Aleatorio' button create a random bingo
-  document.getElementById("random-btn").addEventListener("click", () => {
+  document.getElementById('random-btn').addEventListener('click', () => {
     const randomId = Math.round(Math.random() * 9999 + 1);
     let randomNumbers = [];
     for (let i = 0; i < 10; i++) {
@@ -217,24 +221,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Button increase and decrease functions
-  document.getElementById("decrease").addEventListener("click", () => {
+  document.getElementById('decrease').addEventListener('click', () => {
     if (iRound.value > 1) iRound.value--;
   });
-  document.getElementById("increase").addEventListener("click", () => {
+  document.getElementById('increase').addEventListener('click', () => {
     if (iRound.value < 10) iRound.value++;
   });
 
   // Allows to write round's number
-  iRound.addEventListener("keypress", (e) => {
+  iRound.addEventListener('keypress', (e) => {
     inputControls(e, iRound);
   });
 
   // When a modal's cell is clicked, its content will be emptied.
   for (let cell of modalCells) {
-    cell.addEventListener("focus", () => (cell.textContent = ""));
-    cell.addEventListener("keypress", (e) => {
+    cell.addEventListener('focus', () => (cell.textContent = ''));
+    cell.addEventListener('keypress', (e) => {
       modalCellControls(e, cell);
-      if (e.code == "Enter") {
+      if (e.code == 'Enter') {
         cell.nextElementSibling
           ? cell.nextElementSibling.focus()
           : modalBtn.focus();
@@ -243,12 +247,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // By pressing enter, search in all the lists the entered number.
-  jugada.addEventListener("keypress", (e) => {
+  jugada.addEventListener('keypress', (e) => {
     const bingos = model.getBingos();
     const occurrencies = locateNumber(jugada.value);
 
     // When entering a number pressing Enter, the corresponding cell in each bingo will be checked.
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      debugger;
       for (let index in bingos) {
         renderChecked(
           bingos[index].id,
@@ -264,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Empty the input
-      jugada.value = "";
+      jugada.value = '';
     } else {
       inputControls(e, jugada);
     }
