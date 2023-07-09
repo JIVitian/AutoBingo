@@ -1,7 +1,7 @@
 export default class Bingo {
   constructor() {
     // Get the bingos from the local storage
-    this.bingos = JSON.parse(localStorage.getItem("bingos"));
+    this.bingos = JSON.parse(localStorage.getItem('bingos'));
     // if the list not exists or is undefined, create one element from it
     if (!this.bingos || this.bingos.length < 1) {
       this.bingos = [
@@ -20,7 +20,7 @@ export default class Bingo {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           ],
 
           // [[1, 0], [2,0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0], [10,0]]
@@ -31,7 +31,13 @@ export default class Bingo {
 
   // Save changes in local Storage
   save() {
-    localStorage.setItem("bingos", JSON.stringify(this.bingos));
+    localStorage.setItem('bingos', JSON.stringify(this.bingos));
+    return this;
+  }
+
+  setBingos(bingos) {
+    this.bingos = bingos;
+    return this.save;
   }
 
   // Retunrs a copy bingo's list
@@ -45,7 +51,7 @@ export default class Bingo {
 
     for (let i = 0; i < 10; i++) {
       checks.push([]);
-      for (let j = 0; j < 10; j++){
+      for (let j = 0; j < 10; j++) {
         checks[i].push(0);
       }
     }
@@ -53,7 +59,7 @@ export default class Bingo {
     const bingo = {
       id,
       numbers,
-      checks
+      checks,
     };
 
     this.bingos.push(bingo);
@@ -75,6 +81,11 @@ export default class Bingo {
   removeBingo(id) {
     const index = this.findBingo(id);
     this.bingos.splice(index, 1);
-    this.save();
+    return this.save();
+  }
+
+  removeAllBingos() {
+    this.bingos = [];
+    return this.save();
   }
 }
